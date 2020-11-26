@@ -27,50 +27,37 @@ Param:
 	keyGpioPin:				待初始化按键对应的 GPIO PIN 口;
 ****************************************************************************************************************************
 */
-INT8 KeyGpioInit(GPIO_TypeDef* keyGpioPort, UINT32 keyGpioPin)
+INT8 KeyUpGpioInit(void)
 {
 	GPIO_InitTypeDef keyGpioInitStruct;
 
-	if((KEYX_GPIO_PORT != keyGpioPort) && (KEY_UP_GPIO_PORT != keyGpioPort))
-	{
-		#if DEBUG_EN
-		printf("GPIO_PORT of KEY is error! <===> [fault]\r\n");
-		#endif
-
-		return -1;
-	}
-
-	if ((KEY_UP_GPIO_PIN != keyGpioPin) \
-	 && (KEY0_GPIO_PIN != keyGpioPin) \
-	 && (KEY1_GPIO_PIN != keyGpioPin) \
-	 && (KEY2_GPIO_PIN != keyGpioPin))
-	{
-		#if DEBUG_EN
-		printf("GPIO_PIN of KEY is error! <===> [fault]\r\n");
-		#endif
-
-		return -2;
-	}
-
-	if(KEY_UP_GPIO_PORT == keyGpioPort)
-	{
-		RCC_AHB1PeriphResetCmd(RCC_AHB1Periph_GPIOA, ENABLE);
-	}
-	else
-	{
-		RCC_AHB1PeriphResetCmd(RCC_AHB1Periph_GPIOE, ENABLE);
-	}
+	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
 	
-	keyGpioInitStruct.GPIO_Pin = keyGpioPin;
+	keyGpioInitStruct.GPIO_Pin = KEY_UP_GPIO_PIN;
 	keyGpioInitStruct.GPIO_Mode = GPIO_Mode_IN;
 	keyGpioInitStruct.GPIO_OType = GPIO_OType_PP;
-	keyGpioInitStruct.GPIO_PuPd = GPIO_PuPd_NOPULL;
+	keyGpioInitStruct.GPIO_PuPd = GPIO_PuPd_DOWN;
 	keyGpioInitStruct.GPIO_Speed = GPIO_Fast_Speed;
-	GPIO_Init(keyGpioPort, &keyGpioInitStruct);
+	GPIO_Init(KEY_UP_GPIO_PORT, &keyGpioInitStruct);
 
 	return 0;
 }
 
+INT8 KeyxGpioInit(UINT32 keyGpioPin)
+{
+	GPIO_InitTypeDef keyGpioInitStruct;
+
+	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOE, ENABLE);
+	
+	keyGpioInitStruct.GPIO_Pin = keyGpioPin;
+	keyGpioInitStruct.GPIO_Mode = GPIO_Mode_IN;
+	keyGpioInitStruct.GPIO_OType = GPIO_OType_PP;
+	keyGpioInitStruct.GPIO_PuPd = GPIO_PuPd_DOWN;
+	keyGpioInitStruct.GPIO_Speed = GPIO_Fast_Speed;
+	GPIO_Init(KEYX_GPIO_PORT, &keyGpioInitStruct);
+
+	return 0;
+}
 
 /*
 ****************************************************************************************************************************
@@ -84,38 +71,18 @@ Param:
 	ledGpioPin:				待初始化按键对应的 GPIO PIN 口;
 ****************************************************************************************************************************
 */
-INT8 LedGpioInit(GPIO_TypeDef* ledGpioPort, UINT32 ledGpioPin)
+INT8 LedGpioInit(UINT32 ledGpioPin)
 {
 	GPIO_InitTypeDef ledGpioInitStruct;
-	
-	if(LED_GPIO_PORT != ledGpioPort)
-	{
-		#if DEBUG_EN
-		printf("GPIO_PORT of LED is error! <===> [fault]\r\n");
-		#endif
 
-		return -1;
-	}
-
-	if ((LED0_GPIO_PIN != ledGpioPin) \
-	 && (LED1_GPIO_PIN != ledGpioPin) \
-	 && ((LED0_GPIO_PIN | LED1_GPIO_PIN) != ledGpioPin))
-	{
-		#if DEBUG_EN
-		printf("GPIO_PIN of LED is error! <==> [fault]\r\n");
-		#endif
-
-		return -2;
-	}
-
-	RCC_AHB1PeriphResetCmd(RCC_AHB1Periph_GPIOF, ENABLE);
+	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOF, ENABLE);
 
 	ledGpioInitStruct.GPIO_Pin = ledGpioPin;
 	ledGpioInitStruct.GPIO_Mode = GPIO_Mode_OUT;
 	ledGpioInitStruct.GPIO_OType = GPIO_OType_PP;
 	ledGpioInitStruct.GPIO_PuPd = GPIO_PuPd_UP;
 	ledGpioInitStruct.GPIO_Speed = GPIO_Fast_Speed;
-	GPIO_Init(ledGpioPort, &ledGpioInitStruct);
+	GPIO_Init(LED_GPIO_PORT, &ledGpioInitStruct);
 	
 	return 0;
 }
@@ -132,36 +99,18 @@ Param:
 	beepGpioPin:			待初始化按键对应的 GPIO PIN 口;
 ****************************************************************************************************************************
 */
-INT8 BeepGpioInit(GPIO_TypeDef* beepGpioPort, UINT32 beepGpioPin)
+INT8 BeepGpioInit(void)
 {
 	GPIO_InitTypeDef beepGpioInitStruct;
-	
-	if(BEEP_GPIO_PORT != beepGpioPort)
-	{
-		#if DEBUG_EN
-		printf("GPIO_PORT of BEEP is error! <===> [fault]\r\n");
-		#endif
 
-		return -1;
-	}
+	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOF, ENABLE);
 
-	if(BEEP_GPIO_PIN != beepGpioPin)
-	{
-		#if DEBUG_EN
-		printf("GPIO_PIN of BEEP is error! <===> [fault]\r\n");
-		#endif 
-
-		return -2;
-	}
-
-	RCC_AHB1PeriphResetCmd(RCC_AHB1Periph_GPIOF, ENABLE);
-
-	beepGpioInitStruct.GPIO_Pin = beepGpioPin;
+	beepGpioInitStruct.GPIO_Pin = BEEP_GPIO_PIN;
 	beepGpioInitStruct.GPIO_Mode = GPIO_Mode_OUT;
 	beepGpioInitStruct.GPIO_OType = GPIO_OType_PP;
 	beepGpioInitStruct.GPIO_PuPd = GPIO_PuPd_DOWN;
 	beepGpioInitStruct.GPIO_Speed = GPIO_Fast_Speed;
-	GPIO_Init(beepGpioPort, &beepGpioInitStruct);
+	GPIO_Init(BEEP_GPIO_PORT, &beepGpioInitStruct);
 	
 	return 0;
 }

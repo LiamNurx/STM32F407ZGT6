@@ -129,7 +129,7 @@ INT8 UsartRxBuffInit(CIRCULAR_QUEUE *usartRxBuff)
 	memset(usartRxBuff, 0, sizeof(CIRCULAR_QUEUE));
 	
 #if DEBUG_EN
-	printf("front: %d\r\nrear: %d\r\n", usartRxBuff->front, usartRxBuff->rear);
+	printf("front: %d   rear: %d\r\n", usartRxBuff->front, usartRxBuff->rear);
 #endif
 
 	return 0;

@@ -64,9 +64,12 @@ BEEP	<==>	PF8			//	高电平发声
 
 #define		BEEP_GPIO_PIN				GPIO_Pin_8
 
-INT8 KeyGpioInit(GPIO_TypeDef* keyGpioPort, UINT32 keyGpioPin);
-INT8 LedGpioInit(GPIO_TypeDef* ledGpioPort, UINT32 ledGpioPin);
-INT8 BeepGpioInit(GPIO_TypeDef* beepGpioPort, UINT32 beepGpioPin);
+INT8 KeyUpGpioInit(void);
+INT8 KeyxGpioInit(UINT32 keyGpioPin);
+INT8 LedGpioInit(UINT32 ledGpioPin);
+INT8 BeepGpioInit(void);
+INT8 LedOnOff(GPIO_TypeDef* ledPort, UINT16 ledPin, BitAction ledStatus);
+INT8 BeepOnOff(GPIO_TypeDef* beepPort, UINT16 beepPin, BitAction beepStatus);
 
 #endif			//	End of "SYSCONFIG_H"
 

@@ -43,7 +43,7 @@ void KeyUpExtiInit(void)
 	keyUpNvicInitStruct.NVIC_IRQChannelPreemptionPriority = 0;
 	
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG, ENABLE);
-	KeyGpioInit(KEY_UP_GPIO_PORT, KEY_UP_GPIO_PIN);
+	KeyUpGpioInit();
 	SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOA, EXTI_PinSource0);
 	EXTI_Init(&keyUpExtiInitStruct);
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);

@@ -6,7 +6,6 @@ Date:				2020.11.14
 
 Description:
 	1.
-	2.
 ****************************************************************************************************************************
 */
 
@@ -32,15 +31,15 @@ int main()
 	UsartRxBuffInit(gpDebugRxBuff);								//	DEBUG 接收缓存初始化;
 #endif
 
-	KeyGpioInit(KEY_UP_GPIO_PORT, KEY_UP_GPIO_PIN);				//	初始化 KEY_UP GPIO
-	LedGpioInit(LED_GPIO_PORT, LED0_GPIO_PIN | LED1_GPIO_PIN);	//	初始化 LED GPIO
-	BeepGpioInit(BEEP_GPIO_PORT, BEEP_GPIO_PIN);				//	初始化 BEEP GPIO
-
+	LedGpioInit(LED0_GPIO_PIN | LED1_GPIO_PIN);					//	初始化 LED GPIO
+	BeepGpioInit();												//	初始化 BEEP GPIO
 	KeyUpExtiInit();											//	KeyUp 外部中断配置
 	
 	while(1)
 	{
-		;
+		LedOnOff(LED_GPIO_PORT, LED0_GPIO_PIN, Bit_RESET);
+		LedOnOff(LED_GPIO_PORT, LED1_GPIO_PIN, Bit_RESET);
+		//BeepOnOff(BEEP_GPIO_PORT, BEEP_GPIO_PIN, Bit_RESET);
 	}
 	
 	//return 0;

@@ -32,6 +32,7 @@
 #include "stm32f4xx_usart.h"
 
 #include "usart.h"
+#include "sysconfig.h"
 
 /** @addtogroup Template_Project
   * @{
@@ -163,7 +164,9 @@ void USART1_IRQHandler(void)
 
 void EXTI0_IRQHandler(void)
 {
-	
+	LedOnOff(LED_GPIO_PORT, LED0_GPIO_PIN, Bit_SET);
+	LedOnOff(LED_GPIO_PORT, LED1_GPIO_PIN, Bit_SET);
+	//BeepOnOff(BEEP_GPIO_PORT, BEEP_GPIO_PIN, Bit_RESET);
 }
 
 void EXTI1_IRQHandler(void)
