@@ -39,14 +39,13 @@ void KeyUpExtiInit(void)
 
 	keyUpNvicInitStruct.NVIC_IRQChannel = EXTI0_IRQn;
 	keyUpNvicInitStruct.NVIC_IRQChannelCmd = ENABLE;
-	keyUpNvicInitStruct.NVIC_IRQChannelSubPriority = 0;
-	keyUpNvicInitStruct.NVIC_IRQChannelPreemptionPriority = 0;
+	keyUpNvicInitStruct.NVIC_IRQChannelSubPriority = PRIORITY_GROUP_1;
+	keyUpNvicInitStruct.NVIC_IRQChannelPreemptionPriority = PRI_GROUP1_SUB3_KEYUP;
 	
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG, ENABLE);
 	KeyUpGpioInit();
 	SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOA, EXTI_PinSource0);
 	EXTI_Init(&keyUpExtiInitStruct);
-	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
 	NVIC_Init(&keyUpNvicInitStruct);
 }
 

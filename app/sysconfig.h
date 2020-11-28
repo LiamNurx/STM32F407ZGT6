@@ -64,6 +64,32 @@ BEEP	<==>	PF8			//	高电平发声
 
 #define		BEEP_GPIO_PIN				GPIO_Pin_8
 
+//	PRIORITY_GROUP
+#define		PRIORITY_GROUP_0			0				//	优先适用于系统级中断分组
+#define		PRIORITY_GROUP_1			1				//	优先适用于应用级中断分组
+
+//	PRIORITY_SUB
+/* 系统级中断优先级分配 */
+#define		PRI_GROUP0_SUB0_			0
+#define		PRI_GROUP0_SUB1_			1
+#define		PRI_GROUP0_SUB2_			2
+#define		PRI_GROUP0_SUB3_			3
+#define		PRI_GROUP0_SUB4_			4
+#define		PRI_GROUP0_SUB5_			5
+#define		PRI_GROUP0_SUB6_			6
+#define		PRI_GROUP0_SUB7_			7
+/* 应用级中断优先级分配 */
+#define		PRI_GROUP1_SUB0_			0
+#define		PRI_GROUP1_SUB1_			1
+#define		PRI_GROUP1_SUB2_			2
+#define		PRI_GROUP1_SUB3_KEYUP		3
+#define		PRI_GROUP1_SUB4_KEY0		4
+#define		PRI_GROUP1_SUB5_KEY1		5
+#define		PRI_GROUP1_SUB6_KEY2		6
+#define		PRI_GROUP1_SUB7_DEBUG		7
+
+
+INT8 SysConfigInit(void);
 INT8 KeyUpGpioInit(void);
 INT8 KeyxGpioInit(UINT32 keyGpioPin);
 INT8 LedGpioInit(UINT32 ledGpioPin);

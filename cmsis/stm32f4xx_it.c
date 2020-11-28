@@ -28,6 +28,8 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
+
+#include "stm32f4xx.h"
 #include "stm32f4xx_it.h"
 #include "stm32f4xx_usart.h"
 
@@ -162,11 +164,37 @@ void USART1_IRQHandler(void)
 	}
 }
 
+/*
+**********************************************************************************************************************
+Note:
+	1.判断外部中断挂起状态寄存器;
+	2.处理中断内容;
+	3.清除外部中断挂起标志，避免中断重复响应;
+**********************************************************************************************************************
+*/
 void EXTI0_IRQHandler(void)
 {
-	LedOnOff(LED_GPIO_PORT, LED0_GPIO_PIN, Bit_SET);
-	LedOnOff(LED_GPIO_PORT, LED1_GPIO_PIN, Bit_SET);
-	//BeepOnOff(BEEP_GPIO_PORT, BEEP_GPIO_PIN, Bit_RESET);
+	static UINT8 sStatus = 1;
+
+	//	可在此处适当添加延时函数，防抖动;	(10Ms左右)
+	
+	if(SET == EXTI_GetITStatus(EXTI_Line0))
+	{
+		sStatus++;
+
+		if(0 == sStatus % 2)
+		{
+			LedOnOff(LED_GPIO_PORT, LED0_GPIO_PIN, Bit_SET);
+			LedOnOff(LED_GPIO_PORT, LED1_GPIO_PIN, Bit_SET);
+		}
+		else
+		{
+			LedOnOff(LED_GPIO_PORT, LED0_GPIO_PIN, Bit_RESET);
+			LedOnOff(LED_GPIO_PORT, LED1_GPIO_PIN, Bit_RESET);
+		}
+		
+		EXTI_ClearITPendingBit(EXTI_Line0);
+	}
 }
 
 void EXTI1_IRQHandler(void)

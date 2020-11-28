@@ -108,8 +108,8 @@ INT8 DebugUsart1Init(UINT32 boundRate)
 
 	usartNvicInitStruct.NVIC_IRQChannel = USART1_IRQn;
 	usartNvicInitStruct.NVIC_IRQChannelCmd = ENABLE;
-	usartNvicInitStruct.NVIC_IRQChannelPreemptionPriority = 0;
-	usartNvicInitStruct.NVIC_IRQChannelSubPriority = 0;
+	usartNvicInitStruct.NVIC_IRQChannelPreemptionPriority = PRIORITY_GROUP_1;
+	usartNvicInitStruct.NVIC_IRQChannelSubPriority = PRI_GROUP1_SUB7_DEBUG;
 	NVIC_Init(&usartNvicInitStruct);
 	
 	return 0;

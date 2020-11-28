@@ -26,20 +26,32 @@ Note:
 */
 int main()
 {
-#if DEBUG_EN
-	DebugUsart1Init(DEBUG_BOUND_RATE);							//	DEBUG_USART 初始化;
-	UsartRxBuffInit(gpDebugRxBuff);								//	DEBUG 接收缓存初始化;
-#endif
+	static INT8 sSysFlag = 1;
+	
+	SysConfigInit();
 
 	LedGpioInit(LED0_GPIO_PIN | LED1_GPIO_PIN);					//	初始化 LED GPIO
 	BeepGpioInit();												//	初始化 BEEP GPIO
 	KeyUpExtiInit();											//	KeyUp 外部中断配置
+
+	if(1 == sSysFlag)
+	{
+		sSysFlag = 0;
+		
+		LedOnOff(LED_GPIO_PORT, LED0_GPIO_PIN, Bit_RESET);
+		LedOnOff(LED_GPIO_PORT, LED1_GPIO_PIN, Bit_RESET);
+		//BeepOnOff(BEEP_GPIO_PORT, BEEP_GPIO_PIN, Bit_SET);
+	}
 	
 	while(1)
 	{
-		LedOnOff(LED_GPIO_PORT, LED0_GPIO_PIN, Bit_RESET);
-		LedOnOff(LED_GPIO_PORT, LED1_GPIO_PIN, Bit_RESET);
-		//BeepOnOff(BEEP_GPIO_PORT, BEEP_GPIO_PIN, Bit_RESET);
+		UsartRxBuffTest();
+		
+		#if 0
+		sSysFlag++;
+		sSysFlag++;
+		sSysFlag--;
+		#endif
 	}
 	
 	//return 0;
