@@ -25,7 +25,7 @@
 #	在使用 .bat 文件执行 Make 时，若出现类似如下的异常:
 #	"make: Interrupt/Exception caught (code = 0xc00000fd, addr = 0x425073)"
 #	则需要使用如下声明：
-#SHELL=C:/Windows/System32/cmd.exe
+SHELL=C:/Windows/System32/cmd.exe
 #	End of Note!
 
 ARMCC = armcc
@@ -108,6 +108,7 @@ APPOBJS += ./app/main.o
 APPOBJS += ./app/sysconfig.o
 APPOBJS += ./app/usart.o
 APPOBJS += ./app/exti.o
+APPOBJS += ./app/timer.o
 
 #	汇总目标依赖文件，有新增内容时，在尾部增加即可。
 #	务必保持 $(CMSISOBJS) 在变量的起首位置，因为汇编启动目标文件必须在任意时刻均位于目标依赖文件变量的起首位置！！！！！！

@@ -5,7 +5,7 @@ Author:				Liam.Nurx
 Date:				2020.11.14
 
 Description:
-	1.板载硬件资源初始化驱动;
+	1.板载硬件资源初始化;
 ****************************************************************************************************************************
 */
 
@@ -13,6 +13,7 @@ Description:
 #include "stm32f4xx_gpio.h"
 
 #include "usart.h"
+#include "timer.h"
 #include "sysconfig.h"
 
 extern CIRCULAR_QUEUE		*gpDebugRxBuff;
@@ -20,9 +21,10 @@ extern CIRCULAR_QUEUE		*gpDebugRxBuff;
 /*
 ****************************************************************************************************************************
 Note:
-	1.初始化 DEBUG_UART 的 GPIO 及 UART 相关配置;
-	2.初始化 DEBUG_UART 的数据接收缓存队列;
-	3.初始化系统中断优先级分组;				//	优先级分组初始化函数在系统复位前只应初始化一次;
+	1.初始化系统中断优先级分组;				//	优先级分组初始化函数在系统复位前只应初始化一次;
+	2.初始化 DEBUG_UART 的 GPIO 及 UART 相关配置;
+	3.初始化 DEBUG_UART 的数据接收缓存队列;
+	4.初始化系统节拍定时器 SysTick;
 
 #	中断分组及中断优先级配置
 	Cortex-M3/M4 实现了优先级配置寄存器的所有8位
@@ -40,13 +42,15 @@ Note:
 */
 INT8 SysConfigInit()
 {
+	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1);				//	设置系统优先级分组;
+	
 #if DEBUG_EN
 	DebugUsart1Init(DEBUG_BOUND_RATE);							//	DEBUG_USART 初始化;
 	UsartRxBuffInit(gpDebugRxBuff);								//	DEBUG 接收缓存初始化;
-#endif
+#endif	
 
-	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1);				//	设置系统优先级分组;
-	
+	SysTickTimerInit();
+
 	return 0;
 }
 

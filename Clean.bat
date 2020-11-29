@@ -6,6 +6,6 @@
 
 @ECHO OFF
 
-make -f Makefile.forbat clean
+make clean
 
 PAUSE

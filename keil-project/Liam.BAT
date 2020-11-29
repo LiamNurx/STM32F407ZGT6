@@ -7,6 +7,7 @@ SET CPU_CLOCK=0x00B71B00
 "C:\Keil_v5\ARM\ARMCC\Bin\ArmCC" --Via ".\objects\sysconfig.__i"
 "C:\Keil_v5\ARM\ARMCC\Bin\ArmCC" --Via ".\objects\usart.__i"
 "C:\Keil_v5\ARM\ARMCC\Bin\ArmCC" --Via ".\objects\exti.__i"
+"C:\Keil_v5\ARM\ARMCC\Bin\ArmCC" --Via ".\objects\timer.__i"
 "C:\Keil_v5\ARM\ARMCC\Bin\ArmCC" --Via ".\objects\system_stm32f4xx.__i"
 "C:\Keil_v5\ARM\ARMCC\Bin\ArmCC" --Via ".\objects\stm32f4xx_it.__i"
 "C:\Keil_v5\ARM\ARMCC\Bin\ArmAsm" --Via ".\objects\startup_stm32f40_41xxx._ia"
@@ -18,5 +19,5 @@ SET CPU_CLOCK=0x00B71B00
 "C:\Keil_v5\ARM\ARMCC\Bin\ArmCC" --Via ".\objects\stm32f4xx_syscfg.__i"
 "C:\Keil_v5\ARM\ARMCC\Bin\ArmLink" --Via ".\Objects\STM32F407.lnp"
 "C:\Keil_v5\ARM\ARMCC\Bin\fromelf.exe" ".\Objects\STM32F407.axf" --i32combined --output ".\Objects\STM32F407.hex"
-C:\Keil_v5\ARM\ARMCC\bin\fromelf.exe --bin --output E:\My_Project\STM32F407\keil-project\Objects\STM32F407.bin E:\My_Project\STM32F407\keil-project\Objects\STM32F407.axf
-E:\My_Project\STM32F407\keil-project\CleanObjFiles.bat
+C:\Keil_v5\ARM\ARMCC\bin\fromelf.exe --bin --output .\Objects\STM32F407.bin .\Objects\STM32F407.axf
+.\CleanObjFiles.bat

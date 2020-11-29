@@ -6,7 +6,7 @@
 
 @ECHO OFF
 
-make -f Makefile.forbat
+make
 
 PAUSE
 
