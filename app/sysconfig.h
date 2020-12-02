@@ -15,16 +15,7 @@ Description:
 
 #include "stm32f4xx_gpio.h"
 
-typedef		unsigned char				UINT8;
-typedef		unsigned short				UINT16;
-typedef		unsigned int				UINT32;
-typedef		signed char					INT8;
-typedef		signed short				INT16;
-typedef		signed int					INT32;
-
-#define		TRUE						0x01
-#define		FALSE						0x00
-
+#include "basetype.h"
 
 /*
 ****************************************************************************************************************************

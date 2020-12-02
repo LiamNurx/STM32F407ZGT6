@@ -144,9 +144,10 @@ void PendSV_Handler(void)
   * @param  None
   * @retval None
   */
+extern unsigned int g1MsStkCounter;
 void SysTick_Handler(void)
 {
-
+	g1MsStkCounter++;
 }
 
 /*

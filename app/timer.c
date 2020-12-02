@@ -12,6 +12,9 @@ Description:
 #include "core_cm4.h"
 
 #include "timer.h"
+#include "basetype.h"
+
+volatile unsigned int g1MsStkCounter = 0;				//	根据 SysTick 每 1Ms 计数累加一
 
 
 /*
@@ -26,9 +29,9 @@ Note:
 INT8 SysTickTimerInit(void)
 {
 	SysTick->LOAD &= 0x00FFFFFF;
-	SysTick->LOAD = ;
+	SysTick->LOAD = STK_1MS_RELOAD_VALUE;
 
-	SysTick->CTRL |= SYSTICK_TIMER_CLKSOURCE;		//	Clock source selection: Processor clock (AHB);
+	SysTick->CTRL &= ~SYSTICK_TIMER_CLKSOURCE;		//	Clock source selection: Processor clock (AHB/8);
 	SysTick->CTRL |= SYSTICK_TIMER_TICKINT;			//	SysTick exception request enable;
 	SysTick->CTRL |= SYSTICK_TIMER_ENABLE;			//	Counter enable;
 	

@@ -18,6 +18,8 @@ Description:
 extern CIRCULAR_QUEUE gDebugRxBuff;
 extern CIRCULAR_QUEUE *gpDebugRxBuff;
 
+extern unsigned int g1MsStkCounter;
+
 /*
 **********************************************************************************************************************
 Note:
@@ -26,32 +28,27 @@ Note:
 */
 int main()
 {
-	static INT8 sSysFlag = 1;
+	static UINT32 sCurMsCnt = 0;
 	
-	SysConfigInit();
+	SysConfigInit();											//	系统初始化
 
 	LedGpioInit(LED0_GPIO_PIN | LED1_GPIO_PIN);					//	初始化 LED GPIO
 	BeepGpioInit();												//	初始化 BEEP GPIO
-	KeyUpExtiInit();											//	KeyUp 外部中断配置
-
-	if(1 == sSysFlag)
-	{
-		sSysFlag = 0;
+	//KeyUpExtiInit();											//	KeyUp 外部中断配置
 		
-		LedOnOff(LED_GPIO_PORT, LED0_GPIO_PIN, Bit_RESET);
-		LedOnOff(LED_GPIO_PORT, LED1_GPIO_PIN, Bit_RESET);
-		//BeepOnOff(BEEP_GPIO_PORT, BEEP_GPIO_PIN, Bit_SET);
-	}
+	LedOnOff(LED_GPIO_PORT, LED0_GPIO_PIN, Bit_RESET);
+	LedOnOff(LED_GPIO_PORT, LED1_GPIO_PIN, Bit_RESET);
+	//BeepOnOff(BEEP_GPIO_PORT, BEEP_GPIO_PIN, Bit_SET);
 	
 	while(1)
 	{
-		UsartRxBuffTest();
-		
-		#if 0
-		sSysFlag++;
-		sSysFlag++;
-		sSysFlag--;
-		#endif
+		//UsartRxBuffTest();
+
+		if(g1MsStkCounter - sCurMsCnt >= 5000)
+		{
+			sCurMsCnt = g1MsStkCounter;
+			printf("Hello, Welcome to the world of STM32!\r\n");
+		}
 	}
 	
 	//return 0;

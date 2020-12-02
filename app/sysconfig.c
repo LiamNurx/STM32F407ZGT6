@@ -9,14 +9,22 @@ Description:
 ****************************************************************************************************************************
 */
 
+#include <stdio.h>
+#include <stddef.h>
+#include <string.h>
+
 #include "stm32f4xx_rcc.h"
 #include "stm32f4xx_gpio.h"
 
+#include "basetype.h"
 #include "usart.h"
 #include "timer.h"
 #include "sysconfig.h"
 
 extern CIRCULAR_QUEUE		*gpDebugRxBuff;
+
+SYSTEM_TIME		gSystemTime;
+SYSTEM_TIME		*gpSystemTime = &gSystemTime;
 
 /*
 ****************************************************************************************************************************
@@ -46,14 +54,55 @@ INT8 SysConfigInit()
 	
 #if DEBUG_EN
 	DebugUsart1Init(DEBUG_BOUND_RATE);							//	DEBUG_USART 初始化;
-	UsartRxBuffInit(gpDebugRxBuff);								//	DEBUG 接收缓存初始化;
 #endif	
 
-	SysTickTimerInit();
+	UsartRxBuffInit(gpDebugRxBuff);								//	DEBUG 接收缓存初始化;
+	SysTickTimerInit();											//	SysTick 初始化;
 
 	return 0;
 }
 
+
+INT8 SystemTimeInit(SYSTEM_TIME *sysTime)
+{
+	if(NULL == sysTime)
+	{
+		#if DEBUG_EN
+		printf("Pointer parameter is NULL. SystemTimeInit failed! <===> [fault]\r\n");
+		#endif
+
+		return -1;
+	}
+
+	memset(sysTime, 0, sizeof(SYSTEM_TIME));
+
+	sysTime->year = 2020;
+	sysTime->month = 12;
+	sysTime->day = 2;
+	sysTime->hour = 23;
+	sysTime->minute = 0;
+	sysTime->second = 0;
+
+	return 0;
+}
+
+INT8 UpdateSystemTime(SYSTEM_TIME *sysTime)
+{
+	static UINT32 msCalculate = 0;
+	
+	if(NULL == sysTime)
+	{
+		#if DEBUG_EN
+		printf("Pointer parameter is NULL. SystemTimeInit failed! <===> [fault]\r\n");
+		#endif
+
+		return -1;
+	}
+
+	
+	
+	return 0;
+}
 
 
 /*

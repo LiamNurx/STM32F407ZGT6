@@ -13,6 +13,8 @@ Description:
 #ifndef		TIMER_H
 #define		TIMER_H
 
+#define		STK_1MS_RELOAD_VALUE			21000				//	SysTick 时钟配置为 21MHz, 1Ms 计数值
+
 #define		STK_CTRL_ENABLE_BIT				0
 #define		STK_CTRL_TICKINT_BIT			1
 #define		STK_CTRL_CLKSOURCE_BIT			2
@@ -27,7 +29,7 @@ Description:
 
 INT8 SysTickTimerInit(void);
 
-#endif		End of "TIMER_H"
+#endif		//	End of "TIMER_H"
 
 
 
