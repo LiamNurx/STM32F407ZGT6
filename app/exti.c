@@ -4,11 +4,6 @@ FileName:			exti.c
 Author:				Liam.Nurx
 Date:				2020.11.23
 
-外部中断的使用示例:
-	1.函数 GPIO_Init() 配置相应 I/O 为输入模式;
-	2.函数 SYSCFG_EXTILineConfig() 将对应 I/O 复用到中断线;
-	3.函数 EXTI_Init() 配置中断/事件模式和触发方式;
-	4.函数 NVIC_Init() 将中断线映射到相应的 NVIC 中断通道;
 ****************************************************************************************************************************
 */
 
@@ -21,13 +16,10 @@ Date:				2020.11.23
 /*
 ****************************************************************************************************************************
 Note:
-	1.KeyUp		<==>	PA0					//	高电平输入有效
-	2.使能 SYSCFG 外设时钟;					//	需要配置寄存器: SYSCFG_EXTICRx
-	3.初始化按键对应的 GPIO;
-	4.将对应的 I/O 复用到中断线上;
+
 ****************************************************************************************************************************
 */
-void KeyUpExtiInit(void)
+void InitKeyUpExti(void)
 {
 	EXTI_InitTypeDef keyUpExtiInitStruct;
 	NVIC_InitTypeDef keyUpNvicInitStruct;
@@ -43,23 +35,23 @@ void KeyUpExtiInit(void)
 	keyUpNvicInitStruct.NVIC_IRQChannelPreemptionPriority = PRI_GROUP1_SUB3_KEYUP;
 	
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG, ENABLE);
-	KeyUpGpioInit();
+	InitKeyUpGpio();
 	SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOA, EXTI_PinSource0);
 	EXTI_Init(&keyUpExtiInitStruct);
 	NVIC_Init(&keyUpNvicInitStruct);
 }
 
-void Key0ExtiInit(void)
+void InitKey0Exti(void)
 {
 	
 }
 
-void Key1ExtiInit(void)
+void InitKey1Exti(void)
 {
 
 }
 
-void Key2ExtiInit(void)
+void InitKey2Exti(void)
 {
 
 }

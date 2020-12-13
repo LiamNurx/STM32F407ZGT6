@@ -17,7 +17,7 @@ Description:
 #include "sysconfig.h"
 #include "usart.h"
 
-CIRCULAR_QUEUE		gDebugRxBuff;							//	用于缓存从调试串口处接收到的数据;
+CIRCULAR_QUEUE		gDebugRxBuff;	
 CIRCULAR_QUEUE		*gpDebugRxBuff = &gDebugRxBuff;
 
 #if DEBUG_EN
@@ -39,7 +39,7 @@ int fputc(int ch, FILE *f)
 { 	
 	while(RESET == USART_GetFlagStatus(DEBUG_USART, USART_FLAG_TC))
 	{
-		;			//	等待数据发送完成。	0 == TC : (传送未完成)		1 == TC : (传送已完成)
+		;
 	}
 
 	USART_SendData(DEBUG_USART, (uint16_t) ch);
@@ -52,12 +52,6 @@ int fputc(int ch, FILE *f)
 /*
 **********************************************************************************************************************
 Note:
-	1.使能 DEBUG 对应 GPIO 的外设时钟;
-	2.使能 DEBUG 对应 UART 的外设时钟;
-	3.DEBUG 对应 GPIO 引脚复用配置;
-	4.初始化 DEBUG 对应 GPIO 的寄存器配置;
-	5.初始化 DEBUG 对应 UART 的寄存器配置;
-	6.使能 DEBUG 对应的 UART;
 
 UxART:
 	USART1		<==>	(PA9_TX , PA10_RX)	/	(PB6_TX , PB7_RX)
@@ -68,7 +62,7 @@ UxART:
 	USART6		<==>	(PC6_TX , PC7_RX)	/	(PG14_TX ,PG9_RX)	
 **********************************************************************************************************************
 */
-INT8 DebugUsart1Init(UINT32 boundRate)
+INT8 InitDebugUsart1(UINT32 boundRate)
 {
 	GPIO_InitTypeDef 		debugGpioInitStruct;
 	USART_InitTypeDef		debugUsartInitStruct;
@@ -83,19 +77,18 @@ INT8 DebugUsart1Init(UINT32 boundRate)
 		return -1;
 	}
 
-	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);						//	GPIOA--GPIOK 外设时钟使能
-	//RCC_APB1PeriphClockCmd(RCC_APB1Periph_UART5, ENABLE);						//	UxART2--UxART5 外设时钟使能
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1, ENABLE);						//	UxART1/UxART6 外设时钟使能
+	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);				//	Set the "GPIOBEN" bit of RCC_AHB1ENR register.
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1, ENABLE);				//	Set the "USART1EN" bit of RCC_APB2ENR register.
 
-	GPIO_PinAFConfig(GPIOB, GPIO_PinSource6, GPIO_AF_USART1);					//	PB6 ==> USART1_TX
-	GPIO_PinAFConfig(GPIOB, GPIO_PinSource7, GPIO_AF_USART1);					//	PB6 ==> USART1_TX
+	GPIO_PinAFConfig(GPIOB, GPIO_PinSource6, GPIO_AF_USART1);			//	PB6 ==> USART1_TX
+	GPIO_PinAFConfig(GPIOB, GPIO_PinSource7, GPIO_AF_USART1);			//	PB6 ==> USART1_TX
 
 	debugGpioInitStruct.GPIO_Pin = GPIO_Pin_6 | GPIO_Pin_7;
 	debugGpioInitStruct.GPIO_Mode = GPIO_Mode_AF;
 	debugGpioInitStruct.GPIO_OType = GPIO_OType_PP;
 	debugGpioInitStruct.GPIO_PuPd = GPIO_PuPd_UP;
 	debugGpioInitStruct.GPIO_Speed = GPIO_Speed_50MHz;
-	GPIO_Init(GPIOB, &debugGpioInitStruct);										//	PB6 ==> USART1_TX GPIO_Init
+	GPIO_Init(GPIOB, &debugGpioInitStruct);								//	PB6 ==> USART1_TX GPIO_Init
 
 	debugUsartInitStruct.USART_BaudRate = boundRate;
 	debugUsartInitStruct.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
@@ -115,7 +108,7 @@ INT8 DebugUsart1Init(UINT32 boundRate)
 	return 0;
 }
 
-INT8 UsartRxBuffInit(CIRCULAR_QUEUE *usartRxBuff)
+INT8 InitUsartRxBuff(CIRCULAR_QUEUE *usartRxBuff)
 {
 	if(NULL == usartRxBuff)
 	{
@@ -128,9 +121,9 @@ INT8 UsartRxBuffInit(CIRCULAR_QUEUE *usartRxBuff)
 
 	memset(usartRxBuff, 0, sizeof(CIRCULAR_QUEUE));
 	
-#if DEBUG_EN
+	#if DEBUG_EN
 	printf("front: %d   rear: %d\r\n", usartRxBuff->front, usartRxBuff->rear);
-#endif
+	#endif
 
 	return 0;
 }
@@ -139,7 +132,7 @@ INT8 UsartRxBuffInit(CIRCULAR_QUEUE *usartRxBuff)
 /*
 **********************************************************************************************************************
 Note:
-	1.从 DEBUG_USART 的 RX 处接收数据存入缓存;
+
 **********************************************************************************************************************
 */
 INT8 UsartRxBuffStore(UINT8 ch)
@@ -162,8 +155,7 @@ INT8 UsartRxBuffStore(UINT8 ch)
 /*
 **********************************************************************************************************************
 Note:
-	1.将从调试接收串口接收到的数据全部实时打印输出;
-	2.每输出一个字节，更新数据缓存队列读指针;
+
 **********************************************************************************************************************
 */
 INT8 UsartRxBuffTest(void)
@@ -172,7 +164,7 @@ INT8 UsartRxBuffTest(void)
 	{
 		while(RESET == USART_GetFlagStatus(DEBUG_USART, USART_FLAG_TC))
 		{
-			;			//	等待数据发送完成。	0 == TC : (传送未完成)		1 == TC : (传送已完成)
+			;
 		}
 
 		USART_SendData(DEBUG_USART, (uint16_t) gpDebugRxBuff->element[gpDebugRxBuff->front]);
@@ -185,13 +177,9 @@ INT8 UsartRxBuffTest(void)
 
 
 /*
-#	数据入队
 *************************************************************************************************************************
 Note:
-	1.若参数指针为 NULL , 函数返回值为: -1
-	2.若队列已满，数据丢弃，函数返异常返回值: -2;
-	3.若队列未满，数据入队，更新队尾位置，函数正常返回: 0;
-	4.入队时，只需修改队尾指针即可；
+
 *************************************************************************************************************************
 */
 INT8 EnQueue(CIRCULAR_QUEUE *fifo, UINT8 byteData)
@@ -223,13 +211,9 @@ INT8 EnQueue(CIRCULAR_QUEUE *fifo, UINT8 byteData)
 
 
 /*
-#	数据出队
 *************************************************************************************************************************
 Note:
-	1.若参数指针为 NULL , 函数返回值为: -1
-	2.若队列已空，函数返异常返回值: -2;
-	3.若队列不空，从队首删除元素，更新队首位置，函数正常返回: 0;
-	4.出队时，只需修改队首指针即可；
+
 *************************************************************************************************************************
 */
 INT8 DeQueue(CIRCULAR_QUEUE *fifo)
@@ -264,11 +248,9 @@ INT8 DeQueue(CIRCULAR_QUEUE *fifo)
 
 
 /*
-#	获取队列长度
 *************************************************************************************************************************
 Note:
-	1.若指针参数为 NULL , 函数返回值为: -1
-	2.函数正常返回队列长度;
+
 *************************************************************************************************************************
 */
 INT16 GetQueueLength(CIRCULAR_QUEUE *fifo)

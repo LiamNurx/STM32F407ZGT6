@@ -1,6 +1,6 @@
 ############################################################################################################################################################################
 #FileName:			Makefile
-#Author:				Liam.Nurx
+#Author:			Liam.Nurx
 #Date:				2020.11.14
 #
 #Description:
@@ -100,6 +100,7 @@ CMSISSRCOBJS += ./cmsis/src/stm32f4xx_gpio.o
 CMSISSRCOBJS += ./cmsis/src/stm32f4xx_rcc.o
 CMSISSRCOBJS += ./cmsis/src/stm32f4xx_usart.o
 CMSISSRCOBJS += ./cmsis/src/stm32f4xx_syscfg.o
+CMSISSRCOBJS += ./cmsis/src/stm32f4xx_iwdg.o
 #CMSISSRCOBJS += ./cmsis/src/
 CMSISSRCOBJS += 
 

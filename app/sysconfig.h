@@ -5,7 +5,6 @@ Author:				Liam.Nurx
 Date:				2020.11.14
 
 Description:
-	1.对开发板上硬件资源的 GPIO 端口进行重定义;
 	
 ****************************************************************************************************************************
 */
@@ -19,18 +18,15 @@ Description:
 
 /*
 ****************************************************************************************************************************
-#	按键 GPIO 分配:
-KEY0	<==>	PE4			//	低电平输入有效
-KEY1	<==>	PE3			//	低电平输入有效
-KEY2	<==>	PE2			//	低电平输入有效
-WK_UP	<==>	PA0			//	高电平输入有效
+KEY0	<==>	PE4	
+KEY1	<==>	PE3	
+KEY2	<==>	PE2	
+WK_UP	<==>	PA0	
 
-#	LED GPIO 分配
-LED0	<==>	PF9			//	低电平灯亮
-LED1	<==>	PF10		//	低电平灯亮
+LED0	<==>	PF9	
+LED1	<==>	PF10
 
-#	蜂鸣器 GPIO 分配
-BEEP	<==>	PF8			//	高电平发声
+BEEP	<==>	PF8	
 ****************************************************************************************************************************
 */
 //	KEY
@@ -56,11 +52,10 @@ BEEP	<==>	PF8			//	高电平发声
 #define		BEEP_GPIO_PIN				GPIO_Pin_8
 
 //	PRIORITY_GROUP
-#define		PRIORITY_GROUP_0			0				//	优先适用于系统级中断分组
-#define		PRIORITY_GROUP_1			1				//	优先适用于应用级中断分组
+#define		PRIORITY_GROUP_0			0
+#define		PRIORITY_GROUP_1			1
 
 //	PRIORITY_SUB
-/* 系统级中断优先级分配 */
 #define		PRI_GROUP0_SUB0_			0
 #define		PRI_GROUP0_SUB1_			1
 #define		PRI_GROUP0_SUB2_			2
@@ -69,7 +64,7 @@ BEEP	<==>	PF8			//	高电平发声
 #define		PRI_GROUP0_SUB5_			5
 #define		PRI_GROUP0_SUB6_			6
 #define		PRI_GROUP0_SUB7_			7
-/* 应用级中断优先级分配 */
+
 #define		PRI_GROUP1_SUB0_			0
 #define		PRI_GROUP1_SUB1_			1
 #define		PRI_GROUP1_SUB2_			2
@@ -80,11 +75,19 @@ BEEP	<==>	PF8			//	高电平发声
 #define		PRI_GROUP1_SUB7_DEBUG		7
 
 
-INT8 SysConfigInit(void);
-INT8 KeyUpGpioInit(void);
-INT8 KeyxGpioInit(UINT32 keyGpioPin);
-INT8 LedGpioInit(UINT32 ledGpioPin);
-INT8 BeepGpioInit(void);
+INT8 InitSysConfig(void);
+void ShowSystemInformation(void);
+INT8 InitSystemTime(SYSTEM_TIME *sysTime);
+INT8 UpdateSystemTime(SYSTEM_TIME *sysTime);
+UINT32 GetRtcTick(void);
+UINT32 CalcRtcTickDlt(UINT32 preRtcTick);
+INT8 InitIWDG(void);
+INT8 FeedIWDG(void);
+INT8 IsNeedFeedIWDG(void);
+INT8 InitKeyUpGpio(void);
+INT8 InitKeyxGpio(UINT32 keyGpioPin);
+INT8 InitLedGpio(UINT32 ledGpioPin);
+INT8 InitBeepGpio(void);
 INT8 LedOnOff(GPIO_TypeDef* ledPort, UINT16 ledPin, BitAction ledStatus);
 INT8 BeepOnOff(GPIO_TypeDef* beepPort, UINT16 beepPin, BitAction beepStatus);
 

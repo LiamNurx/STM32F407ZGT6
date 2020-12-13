@@ -15,17 +15,17 @@ Description:
 
 /*
 ****************************************************************************************************************************
-开发板按键 GPIO 分配:
-KEY0	<==>	PE4			//	低电平输入有效
-KEY1	<==>	PE3			//	低电平输入有效
-KEY2	<==>	PE2			//	低电平输入有效
-WK_UP	<==>	PA0			//	高电平输入有效
+Note:
+	KEY0	<==>	PE4	
+	KEY1	<==>	PE3	
+	KEY2	<==>	PE2	
+	WK_UP	<==>	PA0	
 ****************************************************************************************************************************
 */
-void KeyUpExtiInit(void);
-void Key0ExtiInit(void);
-void Key1ExtiInit(void);
-void Key2ExtiInit(void);
+void InitKeyUpExti(void);
+void InitKey0Exti(void);
+void InitKey1Exti(void);
+void InitKey2Exti(void);
 
 
 #endif				//	End of "EXTI_H"

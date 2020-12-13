@@ -5,7 +5,7 @@ Author:				Liam.Nurx
 Date:				2020.11.14
 
 Description:
-	1.板载硬件资源初始化;
+
 ****************************************************************************************************************************
 */
 
@@ -15,29 +15,33 @@ Description:
 
 #include "stm32f4xx_rcc.h"
 #include "stm32f4xx_gpio.h"
+//#include "stm32f4xx_iwdg.h"
+#include "stm32f4xx_iwdg.h"
+
 
 #include "basetype.h"
 #include "usart.h"
 #include "timer.h"
 #include "sysconfig.h"
 
+
 extern CIRCULAR_QUEUE		*gpDebugRxBuff;
 
 SYSTEM_TIME		gSystemTime;
 SYSTEM_TIME		*gpSystemTime = &gSystemTime;
 
+
+//	Get compilation time through predefined macros "__DATE__" and "__TIME__";
+const char *gpVerCreatedTime = __TIME__" , "__DATE__;
+
+
+//	Local functions declare.
+
+
 /*
 ****************************************************************************************************************************
 Note:
-	1.初始化系统中断优先级分组;				//	优先级分组初始化函数在系统复位前只应初始化一次;
-	2.初始化 DEBUG_UART 的 GPIO 及 UART 相关配置;
-	3.初始化 DEBUG_UART 的数据接收缓存队列;
-	4.初始化系统节拍定时器 SysTick;
 
-#	中断分组及中断优先级配置
-	Cortex-M3/M4 实现了优先级配置寄存器的所有8位
-	然而 STM32F407 只实现了16个可编程优先级，即只使用了优先级配置寄存器的高四位(bit7:bit4)
-	本系统配置中断优先级分组占1个Bit，中断优先级占3个Bit:
 	-------------------------------------------------
 	| Priority	|	Priority						|
 	| Group		|	sub								|
@@ -48,22 +52,28 @@ Note:
 	-------------------------------------------------
 ****************************************************************************************************************************
 */
-INT8 SysConfigInit()
+INT8 InitSysConfig()
 {
-	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1);				//	设置系统优先级分组;
+	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1);	
 	
 #if DEBUG_EN
-	DebugUsart1Init(DEBUG_BOUND_RATE);							//	DEBUG_USART 初始化;
+	InitDebugUsart1(DEBUG_BOUND_RATE);	
+	ShowSystemInformation();
 #endif	
 
-	UsartRxBuffInit(gpDebugRxBuff);								//	DEBUG 接收缓存初始化;
-	SysTickTimerInit();											//	SysTick 初始化;
+	InitUsartRxBuff(gpDebugRxBuff);	
+	InitSysTickTimer();	
+	InitIWDG();
 
 	return 0;
 }
 
+void ShowSystemInformation()
+{
+	printf("Ver: %s\r\n", gpVerCreatedTime);
+}
 
-INT8 SystemTimeInit(SYSTEM_TIME *sysTime)
+INT8 InitSystemTime(SYSTEM_TIME *sysTime)
 {
 	if(NULL == sysTime)
 	{
@@ -88,7 +98,7 @@ INT8 SystemTimeInit(SYSTEM_TIME *sysTime)
 
 INT8 UpdateSystemTime(SYSTEM_TIME *sysTime)
 {
-	static UINT32 msCalculate = 0;
+	//static UINT32 msCalculate = 0;
 	
 	if(NULL == sysTime)
 	{
@@ -104,20 +114,102 @@ INT8 UpdateSystemTime(SYSTEM_TIME *sysTime)
 	return 0;
 }
 
+UINT32 GetRtcTick(void)
+{
+	
+	return 0;
+}
+
+
+UINT32 CalcRtcTickDlt(UINT32 preRtcTick)
+{
+	UINT32 curRtcTick;
+
+	curRtcTick = GetRtcTick();
+
+    preRtcTick &= 0x00FFFFFF;
+    curRtcTick &= 0x00FFFFFF;
+    return (curRtcTick >= preRtcTick)?(curRtcTick - preRtcTick):(0x00FFFFFF-preRtcTick + curRtcTick);
+}
+
+
+/*
+#	IWDG Init Function.
+****************************************************************************************************************************
+Note:
+	1.Enable write access to IWDG_PR and IWDG_RLR registers;
+	2.Sets IWDG Prescaler value;
+	3.Sets IWDG Reload value;
+	4.Reloads IWDG counter with value defined in the reload register;
+	5.Enables IWDG;
+
+IWDG overflow time calculation formula:
+	Time = ((4 * 2^PreVal) * RelVal)/(LSI);
+
+	Param:
+		PreVal:		Prescaler value;					//	Default Value:	IWDG_Prescaler_32	
+		RelVal:		Reload value;						//	Default Value:	0x400	(1024)
+		LSI:		LSI Clock frequency;				//	32KHz
+
+	TimeOutMs = 1024 MS
+****************************************************************************************************************************
+*/
+INT8 InitIWDG(void)
+{
+	IWDG_WriteAccessCmd(IWDG_WriteAccess_Enable);
+	IWDG_SetPrescaler(IWDG_Prescaler_32);
+	IWDG_SetReload(0x400);
+	IWDG_ReloadCounter();
+	IWDG_Enable();
+
+	return 0;
+}
+
 
 /*
 ****************************************************************************************************************************
 Note:
-	1.使能对应 GPIO 外设时钟;
-	2.配置对应 GPIO;
-	3.单独配置某个 Key;
-
-Param:
-	keyGpioPort:			待初始化按键对应的 GPIO 端口;
-	keyGpioPin:				待初始化按键对应的 GPIO PIN 口;
+	1.Reloads IWDG counter with value defined in the reload register;
 ****************************************************************************************************************************
 */
-INT8 KeyUpGpioInit(void)
+INT8 FeedIWDG(void)
+{
+	if(1 == IsNeedFeedIWDG())
+	{
+		IWDG_ReloadCounter();
+	}
+	
+	return 0;
+}
+
+/*
+****************************************************************************************************************************
+Note:
+	1.Feed IWDG every 255Ms;
+****************************************************************************************************************************
+*/
+INT8 IsNeedFeedIWDG(void)
+{
+	static UINT32 lastFeedIwdgMs = 0;
+
+	if(g1MsStkCounter - lastFeedIwdgMs >= 255)
+	{
+		lastFeedIwdgMs = g1MsStkCounter;
+		
+		return 1;
+	}
+
+	return 0;
+}
+
+
+/*
+****************************************************************************************************************************
+Note:
+
+****************************************************************************************************************************
+*/
+INT8 InitKeyUpGpio(void)
 {
 	GPIO_InitTypeDef keyGpioInitStruct;
 
@@ -133,7 +225,7 @@ INT8 KeyUpGpioInit(void)
 	return 0;
 }
 
-INT8 KeyxGpioInit(UINT32 keyGpioPin)
+INT8 InitKeyxGpio(UINT32 keyGpioPin)
 {
 	GPIO_InitTypeDef keyGpioInitStruct;
 
@@ -152,16 +244,10 @@ INT8 KeyxGpioInit(UINT32 keyGpioPin)
 /*
 ****************************************************************************************************************************
 Note:
-	1.使能对应 GPIO 外设时钟;
-	2.配置对应 GPIO;
-	3.可以同时配置两个 LED;
 
-Param:
-	ledGpioPort:			待初始化按键对应的 GPIO 端口;
-	ledGpioPin:				待初始化按键对应的 GPIO PIN 口;
 ****************************************************************************************************************************
 */
-INT8 LedGpioInit(UINT32 ledGpioPin)
+INT8 InitLedGpio(UINT32 ledGpioPin)
 {
 	GPIO_InitTypeDef ledGpioInitStruct;
 
@@ -181,15 +267,10 @@ INT8 LedGpioInit(UINT32 ledGpioPin)
 /*
 ****************************************************************************************************************************
 Note:
-	1.使能对应 GPIO 外设时钟;
-	2.配置对应 GPIO;
 
-Param:
-	beepGpioPort:			待初始化按键对应的 GPIO 端口;
-	beepGpioPin:			待初始化按键对应的 GPIO PIN 口;
 ****************************************************************************************************************************
 */
-INT8 BeepGpioInit(void)
+INT8 InitBeepGpio(void)
 {
 	GPIO_InitTypeDef beepGpioInitStruct;
 
@@ -208,12 +289,7 @@ INT8 BeepGpioInit(void)
 /*
 ****************************************************************************************************************************
 Note:
-	1.控制 LED 的亮灭状态;
 
-Param:
-	ledPort:			LED 对应的 GPIO 端口;
-	ledPin:				LED 对应的 PIN 口;
-	ledStatus:			指定 LED 的状态;
 ****************************************************************************************************************************
 */
 INT8 LedOnOff(GPIO_TypeDef* ledPort, UINT16 ledPin, BitAction ledStatus)
@@ -227,12 +303,7 @@ INT8 LedOnOff(GPIO_TypeDef* ledPort, UINT16 ledPin, BitAction ledStatus)
 /*
 ****************************************************************************************************************************
 Note:
-	1.控制 LED 的亮灭状态;
 
-Param:
-	beepPort:			LED 对应的 GPIO 端口;
-	beepPin:			LED 对应的 PIN 口;
-	beepStatus:			指定 LED 的状态;
 ****************************************************************************************************************************
 */
 INT8 BeepOnOff(GPIO_TypeDef* beepPort, UINT16 beepPin, BitAction beepStatus)

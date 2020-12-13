@@ -20,21 +20,28 @@ extern CIRCULAR_QUEUE *gpDebugRxBuff;
 
 extern unsigned int g1MsStkCounter;
 
+
+//	Local function declare;
+INT8 TaskSchedule(void);
+INT8 DealPerSec(void);
+INT8 TaskCheck(void);
+
+
 /*
 **********************************************************************************************************************
 Note:
-	1.系统上电后应先初始化 DEBUG, 便于及时打印调试信息;
+
 **********************************************************************************************************************
 */
 int main()
 {
 	static UINT32 sCurMsCnt = 0;
 	
-	SysConfigInit();											//	系统初始化
+	InitSysConfig();
 
-	LedGpioInit(LED0_GPIO_PIN | LED1_GPIO_PIN);					//	初始化 LED GPIO
-	BeepGpioInit();												//	初始化 BEEP GPIO
-	//KeyUpExtiInit();											//	KeyUp 外部中断配置
+	InitLedGpio(LED0_GPIO_PIN | LED1_GPIO_PIN);	
+	InitBeepGpio();	
+	//InitKeyUpExti();
 		
 	LedOnOff(LED_GPIO_PORT, LED0_GPIO_PIN, Bit_RESET);
 	LedOnOff(LED_GPIO_PORT, LED1_GPIO_PIN, Bit_RESET);
@@ -44,7 +51,7 @@ int main()
 	{
 		//UsartRxBuffTest();
 
-		if(g1MsStkCounter - sCurMsCnt >= 5000)
+		if(g1MsStkCounter - sCurMsCnt >= 10000)
 		{
 			sCurMsCnt = g1MsStkCounter;
 			printf("Hello, Welcome to the world of STM32!\r\n");
@@ -52,6 +59,37 @@ int main()
 	}
 	
 	//return 0;
+}
+
+
+INT8 TaskSchedule()
+{
+	FeedIWDG();
+	DealPerSec();
+
+	return 0;
+}
+
+
+INT8 DealPerSec()
+{
+	static UINT32 sSystemRtcRunTick = 0;
+	
+	if(0 == sSystemRtcRunTick || CalcRtcTickDlt(sSystemRtcRunTick) >= RTC_RATE)
+	{
+		TaskCheck();
+		//UpdateSystemTime();
+	}
+	
+	return 0;
+}
+
+
+INT8 TaskCheck(void)
+{
+	
+
+	return 0;
 }
 
 

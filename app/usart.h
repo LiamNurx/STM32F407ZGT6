@@ -14,11 +14,11 @@ Description:
 
 #include "sysconfig.h"
 
-#define				DEBUG_EN						TRUE						//	默认 DEBUG 使能
-#define				DEBUG_USART						USART1						//	默认使用 USART1 作为调试串口
-#define				DEBUG_BOUND_RATE				115200						//	调试串口波特率
+#define				DEBUG_EN						TRUE						//	
+#define				DEBUG_USART						USART1						//	
+#define				DEBUG_BOUND_RATE				115200						//	
 
-#define				MAX_FIFO_BUFF_LENGTH			512							//	最大缓存为 512 Bytes
+#define				MAX_FIFO_BUFF_LENGTH			512							//	
 
 typedef	struct
 {
@@ -27,8 +27,8 @@ typedef	struct
 	UINT16			rear;														//	2 Bytes
 }CIRCULAR_QUEUE;																//	==> 516 Bytes
 
-INT8 DebugUsart1Init(UINT32 boundRate);
-INT8 UsartRxBuffInit(CIRCULAR_QUEUE *usartRxBuff);
+INT8 InitDebugUsart1(UINT32 boundRate);
+INT8 InitUsartRxBuff(CIRCULAR_QUEUE *usartRxBuff);
 INT8 UsartRxBuffStore(UINT8 ch);
 INT8 UsartRxBuffTest(void);
 INT8 EnQueue(CIRCULAR_QUEUE *fifo, UINT8 byteData);
