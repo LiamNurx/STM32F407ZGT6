@@ -1,6 +1,6 @@
 /*
 ****************************************************************************************************************************
-FileName:			timer.h
+FileName:			app_timer.h
 Author:				Liam.Nurx
 Date:				2020.11.29
 Version:			00.00.01
@@ -10,8 +10,10 @@ Description:
 */
 
 
-#ifndef		TIMER_H
-#define		TIMER_H
+#ifndef		APP_TIMER_H
+#define		APP_TIMER_H
+
+#include "app_sysconfig.h"
 
 #define		STK_1MS_RELOAD_VALUE			21000
 
@@ -27,11 +29,9 @@ Description:
 #define		RTC_RATE						32
 
 
-#include "sysconfig.h"
-
 INT8 InitSysTickTimer(void);
 
-#endif		//	End of "TIMER_H"
+#endif		//	End of "APP_TIMER_H"
 
 
 

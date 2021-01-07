@@ -1,6 +1,6 @@
 /*
 ****************************************************************************************************************************
-FileName:			uart.h
+FileName:			app_uart.h
 Author:				Liam.Nurx
 Date:				2020.11.14
 
@@ -9,10 +9,10 @@ Description:
 ****************************************************************************************************************************
 */
 
-#ifndef				USART_H
-#define				USART_H
+#ifndef				APP_USART_H
+#define				APP_USART_H
 
-#include "sysconfig.h"
+#include "app_sysconfig.h"
 
 #define				DEBUG_EN						TRUE						//	
 #define				DEBUG_USART						USART1						//	
@@ -34,7 +34,7 @@ INT8 UsartRxBuffTest(void);
 INT8 EnQueue(CIRCULAR_QUEUE *fifo, UINT8 byteData);
 INT8 DeQueue(CIRCULAR_QUEUE *fifo);
 INT16 GetQueueLength(CIRCULAR_QUEUE *fifo);
-#endif	//	End of "UART_H"
+#endif	//	End of "APP_UART_H"
 
 
 

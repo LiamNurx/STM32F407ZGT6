@@ -1,6 +1,6 @@
 /*
 ****************************************************************************************************************************
-FileName:			sysconfig.c
+FileName:			app_sysconfig.c
 Author:				Liam.Nurx
 Date:				2020.11.14
 
@@ -20,12 +20,13 @@ Description:
 
 
 #include "basetype.h"
-#include "usart.h"
-#include "timer.h"
-#include "sysconfig.h"
+#include "app_usart.h"
+#include "app_timer.h"
+#include "app_sysconfig.h"
 
 
 extern CIRCULAR_QUEUE		*gpDebugRxBuff;
+extern volatile unsigned int g1MsStkCounter;
 
 SYSTEM_TIME		gSystemTime;
 SYSTEM_TIME		*gpSystemTime = &gSystemTime;
@@ -33,9 +34,6 @@ SYSTEM_TIME		*gpSystemTime = &gSystemTime;
 
 //	Get compilation time through predefined macros "__DATE__" and "__TIME__";
 const char *gpVerCreatedTime = __TIME__" , "__DATE__;
-
-
-//	Local functions declare.
 
 
 /*

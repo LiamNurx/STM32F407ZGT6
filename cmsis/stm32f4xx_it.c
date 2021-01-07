@@ -33,8 +33,8 @@
 #include "stm32f4xx_it.h"
 #include "stm32f4xx_usart.h"
 
-#include "usart.h"
-#include "sysconfig.h"
+#include "app_usart.h"
+#include "app_sysconfig.h"
 
 /** @addtogroup Template_Project
   * @{

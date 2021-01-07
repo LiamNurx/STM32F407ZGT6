@@ -1,6 +1,6 @@
 /*
 ****************************************************************************************************************************
-FileName:			uart.c
+FileName:			app_usart.c
 Author:				Liam.Nurx
 Date:				2020.11.14
 Version:			00.00.01
@@ -14,8 +14,8 @@ Description:
 #include <string.h>
 
 #include "stm32f4xx.h"
-#include "sysconfig.h"
-#include "usart.h"
+#include "app_sysconfig.h"
+#include "app_usart.h"
 
 CIRCULAR_QUEUE		gDebugRxBuff;	
 CIRCULAR_QUEUE		*gpDebugRxBuff = &gDebugRxBuff;
@@ -104,7 +104,7 @@ INT8 InitDebugUsart1(UINT32 boundRate)
 	usartNvicInitStruct.NVIC_IRQChannelPreemptionPriority = PRIORITY_GROUP_1;
 	usartNvicInitStruct.NVIC_IRQChannelSubPriority = PRI_GROUP1_SUB7_DEBUG;
 	NVIC_Init(&usartNvicInitStruct);
-	
+
 	return 0;
 }
 

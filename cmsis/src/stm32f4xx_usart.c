@@ -292,7 +292,7 @@ void USART_Init(USART_TypeDef* USARTx, USART_InitTypeDef* USART_InitStruct)
 			  | USART_InitStruct->USART_Parity \
 			  | USART_InitStruct->USART_Mode;
 
-	//	USART_Init() Ä¬ÈÏÃ»ÓÐÊ¹ÄÜ RXNEIE, ÐèÒªÌí¼ÓÊ¹ÄÜ¡£·ñÔò£¬´®¿Ú½ÓÊÕ²»Õý³£
+	//	USART_Init() é»˜è®¤æœªä½¿èƒ½æŽ¥æ”¶ä¸­æ–­ "RXNEIE"
 	tmpreg |= USART_CR1_RXNEIE;
 
 	/* Write to USART CR1 */

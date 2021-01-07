@@ -1,6 +1,6 @@
 /*
 ****************************************************************************************************************************
-FileName:			sysconfig.h
+FileName:			app_sysconfig.h
 Author:				Liam.Nurx
 Date:				2020.11.14
 
@@ -9,8 +9,8 @@ Description:
 ****************************************************************************************************************************
 */
 
-#ifndef			SYSCONFIG_H
-#define			SYSCONFIG_H
+#ifndef			APP_SYSCONFIG_H
+#define			APP_SYSCONFIG_H
 
 #include "stm32f4xx_gpio.h"
 
@@ -91,7 +91,7 @@ INT8 InitBeepGpio(void);
 INT8 LedOnOff(GPIO_TypeDef* ledPort, UINT16 ledPin, BitAction ledStatus);
 INT8 BeepOnOff(GPIO_TypeDef* beepPort, UINT16 beepPin, BitAction beepStatus);
 
-#endif			//	End of "SYSCONFIG_H"
+#endif			//	End of "APP_SYSCONFIG_H"
 
 
 

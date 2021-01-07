@@ -106,10 +106,10 @@ CMSISSRCOBJS +=
 
 #	“功能应用层” 目标文件变量。新增模块功能时，在尾部添加即可。
 APPOBJS += ./app/main.o
-APPOBJS += ./app/sysconfig.o
-APPOBJS += ./app/usart.o
-APPOBJS += ./app/exti.o
-APPOBJS += ./app/timer.o
+APPOBJS += ./app/app_sysconfig.o
+APPOBJS += ./app/app_usart.o
+APPOBJS += ./app/app_exti.o
+APPOBJS += ./app/app_timer.o
 
 #	汇总目标依赖文件，有新增内容时，在尾部增加即可。
 #	务必保持 $(CMSISOBJS) 在变量的起首位置，因为汇编启动目标文件必须在任意时刻均位于目标依赖文件变量的起首位置！！！！！！
@@ -147,6 +147,7 @@ endif
 .PHONY : clean
 
 clean:
+	rm -rf ./*.d
 	rm -rf $(ALLOBJS)
 	rm -rf $(DEFFILES)
 	rm -rf $(TARPATH)/*.axf 

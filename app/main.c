@@ -11,9 +11,10 @@ Description:
 
 #include <stdio.h>
 
-#include "sysconfig.h"
-#include "usart.h"
-#include "exti.h"
+#include "app_sysconfig.h"
+#include "app_usart.h"
+#include "app_exti.h"
+#include "app_timer.h"
 
 extern CIRCULAR_QUEUE gDebugRxBuff;
 extern CIRCULAR_QUEUE *gpDebugRxBuff;
