@@ -43,14 +43,14 @@ int main()
 	InitLedGpio(LED0_GPIO_PIN | LED1_GPIO_PIN);	
 	InitBeepGpio();	
 	//InitKeyUpExti();
-		
+	
 	LedOnOff(LED_GPIO_PORT, LED0_GPIO_PIN, Bit_RESET);
 	LedOnOff(LED_GPIO_PORT, LED1_GPIO_PIN, Bit_RESET);
 	//BeepOnOff(BEEP_GPIO_PORT, BEEP_GPIO_PIN, Bit_SET);
 	
 	while(1)
 	{
-		//UsartRxBuffTest();
+		UsartRxBuffTest();
 
 		if(g1MsStkCounter - sCurMsCnt >= 10000)
 		{
