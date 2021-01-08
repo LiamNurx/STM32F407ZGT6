@@ -152,13 +152,16 @@ void SysTick_Handler(void)
 
 /*
 **********************************************************************************************************************
-Note:
+USART1_IRQHandler:
+	1.若读取数据寄存器不为空(USART_SR 的 RXNE 位为1)，则读取接收到的数据放入缓存队列;
 
+Note:
+	1.状态位 RXNE 由硬件自动置1，可以通过对 USART_DR 寄存器执行读入操作进行清零，从而达到清中断的效果;
 **********************************************************************************************************************
 */
 void USART1_IRQHandler(void)
 {	
-	if(SET == USART_GetFlagStatus(USART1, USART_FLAG_RXNE))
+	if(SET == USART_GetFlagStatus(DEBUG_USART, USART_FLAG_RXNE))
 	{
 		UsartRxBuffStore((UINT8)USART_ReceiveData(DEBUG_USART));
 	}

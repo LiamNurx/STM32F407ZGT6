@@ -1,6 +1,6 @@
 /*
 ****************************************************************************************************************************
-FileName:			app_uart.h
+FileName:			app_usart.h
 Author:				Liam.Nurx
 Date:				2020.11.14
 
@@ -34,7 +34,7 @@ INT8 UsartRxBuffTest(void);
 INT8 EnQueue(CIRCULAR_QUEUE *fifo, UINT8 byteData);
 INT8 DeQueue(CIRCULAR_QUEUE *fifo);
 INT16 GetQueueLength(CIRCULAR_QUEUE *fifo);
-#endif	//	End of "APP_UART_H"
+#endif				//	End of "APP_UART_H"
 
 
 

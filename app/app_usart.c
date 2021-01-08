@@ -35,6 +35,15 @@ _sys_exit(int x)
 	x = x; 
 } 
 
+/*
+**********************************************************************************************************************
+fputc:
+	1.等待数据发送完成(TC 置1)，将待发送数据传入 USART_DR;
+
+Note:
+	1.TC 位可以通过读取寄存器 USART_SR 然后写入寄存器 USART_DR 来清零; 
+**********************************************************************************************************************
+*/
 int fputc(int ch, FILE *f)
 { 	
 	while(RESET == USART_GetFlagStatus(DEBUG_USART, USART_FLAG_TC))
@@ -51,9 +60,15 @@ int fputc(int ch, FILE *f)
 
 /*
 **********************************************************************************************************************
-Note:
+InitDebugUsart1:
+	1.使能 DEBUG_USART 对应的 GPIO 外设时钟;
+	2.使能 DEBUG_USART 对应的外设时钟;
+	3.DEBUG_USART 对应的 GPIO 的初始化参数配置;
+	4.DEBUG_USART 初始化参数配置;
+	5.DEBUG_USART 使能;
+	6.DEBUG_USART 中断初始化配置;
 
-UxART:
+Note:
 	USART1		<==>	(PA9_TX , PA10_RX)	/	(PB6_TX , PB7_RX)
 	USART2		<==>	(PA2_TX , PA3_RX)	/	(PD5_TX , PD6_RX)
 	USART3		<==>	(PB10_TX , PB11_RX)	/	(PC10_TX , PC11_RX)	/	(PD8_TX , PD9_RX)
@@ -108,6 +123,15 @@ INT8 InitDebugUsart1(UINT32 boundRate)
 	return 0;
 }
 
+/*
+**********************************************************************************************************************
+InitUsartRxBuff:
+	1.初始化指定串口缓存队列;
+
+Note:
+	1.函数 memset() 按字节初始化数据;
+**********************************************************************************************************************
+*/
 INT8 InitUsartRxBuff(CIRCULAR_QUEUE *usartRxBuff)
 {
 	if(NULL == usartRxBuff)
@@ -131,15 +155,18 @@ INT8 InitUsartRxBuff(CIRCULAR_QUEUE *usartRxBuff)
 
 /*
 **********************************************************************************************************************
-Note:
+UsartRxBuffStore:
+	1.将收到的数据缓存入队列;
+	2.若缓存队列已满，新数据被丢弃不入队列;
 
+Note:
 **********************************************************************************************************************
 */
-INT8 UsartRxBuffStore(UINT8 ch)
+INT8 UsartRxBuffStore(UINT8 rxByte)
 {
 	INT8 result;
 
-	result = EnQueue(gpDebugRxBuff, ch);
+	result = EnQueue(gpDebugRxBuff, rxByte);
 
 	if(result)
 	{
@@ -154,8 +181,10 @@ INT8 UsartRxBuffStore(UINT8 ch)
 
 /*
 **********************************************************************************************************************
-Note:
+UsartRxBuffTest:
+	1.若 DEBUG_USART 的接收缓存队列有更新，则将更新的数据发送出去;
 
+Note:
 **********************************************************************************************************************
 */
 INT8 UsartRxBuffTest(void)
@@ -174,17 +203,19 @@ INT8 UsartRxBuffTest(void)
 	return 0;
 }
 
-
-
 /*
 *************************************************************************************************************************
-Note:
+EnQueue:
+	1.在指定队列的队首处入队一个字节的数据;
+	2.若队列已满，则新数据丢弃，维持原队列数据不变;
 
+Note:
+	1.队列已满的判断条件为: front == (rear + 1) % MAX_SIZE;
 *************************************************************************************************************************
 */
-INT8 EnQueue(CIRCULAR_QUEUE *fifo, UINT8 byteData)
+INT8 EnQueue(CIRCULAR_QUEUE *fifo, UINT8 newByte)
 {
-	if(NULL == fifo)
+	if(NULL == fifo) 
 	{
 		#if DEBUG_EN
 		printf("Pointer parameter is NULL. EnQueue failed! <===> [fault]\r\n");
@@ -202,7 +233,7 @@ INT8 EnQueue(CIRCULAR_QUEUE *fifo, UINT8 byteData)
 		return -2;
 	}
 	
-	fifo->element[fifo->front] = byteData;
+	fifo->element[fifo->front] = newByte;
 	fifo->rear = (fifo->rear + 1) % MAX_FIFO_BUFF_LENGTH;
 	
 	return 0;
@@ -212,8 +243,12 @@ INT8 EnQueue(CIRCULAR_QUEUE *fifo, UINT8 byteData)
 
 /*
 *************************************************************************************************************************
-Note:
+DeQueue:
+	1.对指定队列的队头位置出队1字节的数据;
+	2.若队列为空，则返回;
 
+Note:
+	1.队列为空的判定条件: rear == front;
 *************************************************************************************************************************
 */
 INT8 DeQueue(CIRCULAR_QUEUE *fifo)
@@ -245,12 +280,12 @@ INT8 DeQueue(CIRCULAR_QUEUE *fifo)
 	return 0;
 }
 
-
-
 /*
 *************************************************************************************************************************
+GetQueueLength:
+	1.获取指定队列的长度;
+	
 Note:
-
 *************************************************************************************************************************
 */
 INT16 GetQueueLength(CIRCULAR_QUEUE *fifo)
