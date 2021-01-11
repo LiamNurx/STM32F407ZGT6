@@ -77,13 +77,19 @@ BEEP	<==>	PF8
 
 INT8 InitSysConfig(void);
 void ShowSystemInformation(void);
+
 INT8 InitSystemTime(SYSTEM_TIME *sysTime);
 INT8 UpdateSystemTime(SYSTEM_TIME *sysTime);
 UINT32 GetRtcTick(void);
 UINT32 CalcRtcTickDlt(UINT32 preRtcTick);
+
 INT8 InitIWDG(void);
 INT8 FeedIWDG(void);
 INT8 IsNeedFeedIWDG(void);
+INT8 InitWWDG(void);
+INT8 FeedWWDG(void);
+INT8 IsNeedFeedWWDG(void);
+
 INT8 InitKeyUpGpio(void);
 INT8 InitKeyxGpio(UINT32 keyGpioPin);
 INT8 InitLedGpio(UINT32 ledGpioPin);

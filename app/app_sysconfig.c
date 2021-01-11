@@ -5,7 +5,7 @@ Author:				Liam.Nurx
 Date:				2020.11.14
 
 Description:
-
+	1.本文件主要用于管理板载系统资源的初始化配置;
 ****************************************************************************************************************************
 */
 
@@ -16,7 +16,6 @@ Description:
 #include "stm32f4xx_rcc.h"
 #include "stm32f4xx_gpio.h"
 #include "stm32f4xx_iwdg.h"
-
 
 #include "basetype.h"
 #include "app_usart.h"
@@ -149,20 +148,19 @@ UINT32 CalcRtcTickDlt(UINT32 preRtcTick)
 
 
 /*
-#	IWDG Init Function.
 ****************************************************************************************************************************
-Note:
+InitIWDG:
 	1.Enable write access to IWDG_PR and IWDG_RLR registers;
 	2.Sets IWDG Prescaler value;
 	3.Sets IWDG Reload value;
 	4.Reloads IWDG counter with value defined in the reload register;
 	5.Enables IWDG;
 
-IWDG overflow time calculation formula:
-	Time = ((4 * 2^PreVal) * RelVal)/(LSI);
-
+Note:
+	IWDG overflow time calculation formula:
+		Time = (PreVal * RelVal)/(LSI);		<==>	Time = ((4 * 2^IWDG_PR) * RelVal)/(LSI);
 	Param:
-		PreVal:		Prescaler value;					//	Default Value:	IWDG_Prescaler_32	
+		PreVal:		Prescaler value;					//	PreVal = (4 * (2^IWDG_PR))
 		RelVal:		Reload value;						//	Default Value:	0x400	(1024)
 		LSI:		LSI Clock frequency;				//	32KHz
 
@@ -183,6 +181,9 @@ INT8 InitIWDG(void)
 
 /*
 ****************************************************************************************************************************
+FeedIWDG:
+	1.当达到喂狗时限，则喂狗;
+
 Note:
 	1.Reloads IWDG counter with value defined in the reload register;
 ****************************************************************************************************************************
@@ -199,6 +200,13 @@ INT8 FeedIWDG(void)
 
 /*
 ****************************************************************************************************************************
+IsNeedFeedIWDG:
+	1.根据预设喂狗时限判断是否需要喂狗;
+Param:
+	void;
+RtnVal:	
+	1:	需要喂狗;
+	0:	不需喂狗;
 Note:
 	1.Feed IWDG every 255Ms;
 ****************************************************************************************************************************
@@ -213,6 +221,27 @@ INT8 IsNeedFeedIWDG(void)
 		
 		return 1;
 	}
+
+	return 0;
+}
+
+INT8 InitWWDG(void)
+{
+
+
+	return 0;
+}
+
+INT8 FeedWWDG(void)
+{
+	
+
+	return 0;
+}
+
+INT8 IsNeedFeedWWDG(void)
+{
+	
 
 	return 0;
 }
@@ -333,6 +362,7 @@ INT8 BeepOnOff(GPIO_TypeDef* beepPort, UINT16 beepPin, BitAction beepStatus)
 	
 	return 0;
 }
+
 
 
 

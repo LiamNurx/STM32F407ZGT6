@@ -132,7 +132,7 @@ $(TARGET): $(ALLOBJS)
 	rm -rf ./*.htm
 	rm -rf ./*.d
 
-#	依赖文件的引入位置应该在链接处理和编译处理之间，若摆放在其他位置，可能会有问题；
+#	引入依赖文件；
 ifneq ($(DEFFILES),)
 -include $(DEFFILES)
 endif

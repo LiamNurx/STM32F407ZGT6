@@ -482,6 +482,10 @@ SystemInit:
 	5.配置时钟中断寄存器 RCC_CIR;
 	6.配置系统时钟源;
 	......
+
+Note:
+	1.系统上电后，默认的系统时钟为 HSI;
+	2.
 *************************************************************************************************************************
 */
 void SystemInit(void)
@@ -492,13 +496,13 @@ void SystemInit(void)
 #endif
 	/* Reset the RCC clock configuration to the default reset state ------------*/
 	/* Set HSION bit */
-	RCC->CR |= (uint32_t)0x00000001;
+	RCC->CR |= (uint32_t)0x00000001;						//	清除其他位，打开 HSI 振荡器;
 
 	/* Reset CFGR register */
 	RCC->CFGR = 0x00000000;
 
 	/* Reset HSEON, CSSON and PLLON bits */
-	RCC->CR &= (uint32_t)0xFEF6FFFF;
+	RCC->CR &= (uint32_t)0xFEF6FFFF;						//	关闭 PLL、关闭 CSS、关闭 HSE 振荡器;
 
 	/* Reset PLLCFGR register */
 	RCC->PLLCFGR = 0x24003010;
@@ -507,7 +511,7 @@ void SystemInit(void)
 	RCC->CR &= (uint32_t)0xFFFBFFFF;
 
 	/* Disable all interrupts */
-	RCC->CIR = 0x00000000;
+	RCC->CIR = 0x00000000;									//	禁用所有时钟中断;
 
 #if defined(DATA_IN_ExtSRAM) || defined(DATA_IN_ExtSDRAM)
 	SystemInit_ExtMemCtl(); 
@@ -685,18 +689,18 @@ static void SetSysClock(void)
 	if (HSEStatus == (uint32_t)0x01)
 	{
     	/* Select regulator voltage output Scale 1 mode */
-		RCC->APB1ENR |= RCC_APB1ENR_PWREN;
-		PWR->CR |= PWR_CR_VOS;
+		RCC->APB1ENR |= RCC_APB1ENR_PWREN;				//	电源接口时钟使能;
+		PWR->CR |= PWR_CR_VOS;							//	
 
 		/* HCLK = SYSCLK / 1*/
-		RCC->CFGR |= RCC_CFGR_HPRE_DIV1;
+		RCC->CFGR |= RCC_CFGR_HPRE_DIV1;				//	SYSCLK 不分频;
 
 		#if defined(STM32F40_41xxx) || defined(STM32F427_437xx) || defined(STM32F429_439xx) || defined(STM32F446xx)     
     		/* PCLK2 = HCLK / 2*/
-			RCC->CFGR |= RCC_CFGR_PPRE2_DIV2;
+			RCC->CFGR |= RCC_CFGR_PPRE2_DIV2;			//	APB2_CLK = HCLK Divided by 2;
     
 			/* PCLK1 = HCLK / 4*/
-			RCC->CFGR |= RCC_CFGR_PPRE1_DIV4;
+			RCC->CFGR |= RCC_CFGR_PPRE1_DIV4;			//	APB1_CLK = HCLK Divided by 4;
 		#endif /* STM32F40_41xxx || STM32F427_437x || STM32F429_439xx || STM32F446xx */
 
 		#if defined(STM32F401xx)
